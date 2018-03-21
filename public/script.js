@@ -1,29 +1,5 @@
 $(document).ready(function () {
-    LoadData();
-    function LoadData() {
-        employeesRef.get().then(function (querySnapshot) {
-            LoadTableData(querySnapshot);
-        });
-    }
-
-    function LoadTableData(querySnapshot) {
-        var tableRow = '';
-        querySnapshot.forEach(function (doc) {
-            var document = doc.data();
-            tableRow += '<tr>';
-            tableRow += '<td class="fname">' + document.fName + '</td>';
-            tableRow += '<td class="lname">' + document.lName + '</td>';
-            tableRow += '<td class="email">' + document.email + '</td>';
-            tableRow += '<td class="age">' + document.age + '</td>';
-            tableRow += '<td class="gender">' + document.gender + '</td>';
-            tableRow += '<td class="yearsofexperience">' + document.yearsOfExperience + '</td>';
-            tableRow += '<td class="isfulltime">' + document.isFullTime + '</td>';
-            tableRow += '<td class="editEmployee"><i class="fa fa-pencil" aria-hidden="true" style="color:green"></i></td>'
-            tableRow += '<td class="deleteEmployee"><i class="fa fa-trash" aria-hidden="true" style="color:red"></i></td>'
-            tableRow += '</tr>';
-        });
-        $('tbody.tbodyData').append(tableRow);
-    }
+    
 
     //get all the data on app startup
     $('#createEmployee').click(function () {
@@ -55,7 +31,7 @@ $(document).ready(function () {
             }).then(function(docRef){
                 $("#operationStatus").html('<div>Success!</div>');
                 $('.employeeForm').css("display", "none");
-                LoadData();
+                
             });
         }
         else {
@@ -77,7 +53,7 @@ $(document).ready(function () {
             }).then(function() {
                 $('#operationStatus').html('<div class="alert alert-success"><strong>Success!</strong> Employee was updated.</div>').delay(2500).fadeOut('slow');
                 $('.employeeForm').css("display", "none");
-                LoadData();
+                
             })
             .catch(function(error) {
                 $('#operationStatus').html('<div class="alert alert-danger"><strong>Failure!</strong> Employee could not be updated.</div>').delay(2500).fadeOut('slow');
@@ -114,13 +90,11 @@ $(document).ready(function () {
          db.collection("employees").doc(docuName).delete().then(function(){
             $('#operationStatus').html('<div class="alert alert-success"><strong>Success!</strong> Employee was deleted.</div>').delay(2500).fadeOut('slow');
        
-            LoadData();
+            
          }).cath(function(error){
             $('#operationStatus').html('<div class="alert alert-success"><strong>Failure!</strong> Employee was not deleted.</div>').delay(2500).fadeOut('slow');
          });
     });
 
-    $("#searchEmployee").change(function () {
-        console.log('You entered: ', $(this).val());
-    });
+    
 });
