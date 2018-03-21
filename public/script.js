@@ -1,6 +1,12 @@
 $(document).ready(function () {
-    
 
+    $("#btn-signout").click(function(){
+        firebase.auth().signOut().catch(function (error) {
+            alert("注销失败:"+error.message);
+            var errorCode = error.code;
+            var errorMessage = error.message;
+        });
+    });
     //get all the data on app startup
     $('#createEmployee').click(function () {
         $('.employeeForm').css("display", "block");
