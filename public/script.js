@@ -1,11 +1,29 @@
 $(document).ready(function () {
 
-    $("#btn-signout").click(function(){
+    $("#btn-signout").click(function () {
         firebase.auth().signOut().catch(function (error) {
-            alert("注销失败:"+error.message);
+            alert("注销失败:" + error.message);
             var errorCode = error.code;
             var errorMessage = error.message;
         });
+    });
+
+    $("#userAvatar").change(function (event) {
+        var file = event.target.files[0];
+        // Create a root reference
+        var storageRef = firebase.storage().ref();
+
+
+
+        // Create a reference to 'images/mountains.jpg'
+        var fileName=(new Date().getTime())+"."+file.name.split(".")[1];
+
+        var avatarRef = storageRef.child('Avatars/'+fileName);
+        avatarRef.put(file).then(function(snapshot){
+            console.log(snapshot.downloadURL);
+            $("#preview-avatar").attr("src",snapshot.downloadURL);
+        });
+
     });
     //get all the data on app startup
     $('#createEmployee').click(function () {
@@ -23,47 +41,50 @@ $(document).ready(function () {
         var yearsOfExperience = $("#yearsOfExperience").val();
         var isfulltime = $('#isFullTime').is(":checked")
 
+        var avatarURL=$("#preview-avatar").attr("src");
+
         //check if you need to create or update an employee
         if ($(this).text() == "Save Changes") {
-            var docuName=fname.charAt(0)+"."+lname;
+            var docuName = fname.charAt(0) + "." + lname;
             db.collection("employees").doc(docuName).set({
-                fName:fname,
-                lName:lname,
-                email:email,
-                age:age,
-                gender:gender,
-                yearsOfExperience:yearsOfExperience,
-                isFullTime:isfulltime
-            }).then(function(docRef){
+                fName: fname,
+                lName: lname,
+                email: email,
+                age: age,
+                gender: gender,
+                yearsOfExperience: yearsOfExperience,
+                isFullTime: isfulltime,
+                avatarURL:avatarURL
+            }).then(function (docRef) {
                 $("#operationStatus").html('<div>Success!</div>');
                 $('.employeeForm').css("display", "none");
-                
+
             });
         }
         else {
             // Create a reference to the document by following the same pattern of the document name.
-            var docuName = fname.charAt(0)+"."+lname;
+            var docuName = fname.charAt(0) + "." + lname;
             var sfDocRef = db.collection("employees").doc(docuName);
             //{merge:true} 更新原来的对象数据
-            sfDocRef.set({ 
-                fName:fname,
+            sfDocRef.set({
+                fName: fname,
                 lName: lname,
                 email: email,
                 age: age,
                 gender: gender,
                 yearsOfExperience: yearsOfExperience,
                 isFullTime: isfulltime
-            }, 
-            {
-                merge: true
-            }).then(function() {
-                $('#operationStatus').html('<div class="alert alert-success"><strong>Success!</strong> Employee was updated.</div>').delay(2500).fadeOut('slow');
-                $('.employeeForm').css("display", "none");
-                
-            })
-            .catch(function(error) {
-                $('#operationStatus').html('<div class="alert alert-danger"><strong>Failure!</strong> Employee could not be updated.</div>').delay(2500).fadeOut('slow');
-            });
+            },
+                {
+                    merge: true
+                }).then(function () {
+                    $('#operationStatus').html('<div class="alert alert-success"><strong>Success!</strong> Employee was updated.</div>').delay(2500).fadeOut('slow');
+                    $('.employeeForm').css("display", "none");
+
+                })
+                .catch(function (error) {
+                    $('#operationStatus').html('<div class="alert alert-danger"><strong>Failure!</strong> Employee could not be updated.</div>').delay(2500).fadeOut('slow');
+                });
         }
     });
 
@@ -91,16 +112,16 @@ $(document).ready(function () {
         //Get the Employee Data
         var fName = $(this).closest('tr').find('.fname').text(); //First Name
         var lName = $(this).closest('tr').find('.lname').text(); //Last Name
-        
-        var docuName = fName.charAt(0)+"."+lName;
-         db.collection("employees").doc(docuName).delete().then(function(){
+
+        var docuName = fName.charAt(0) + "." + lName;
+        db.collection("employees").doc(docuName).delete().then(function () {
             $('#operationStatus').html('<div class="alert alert-success"><strong>Success!</strong> Employee was deleted.</div>').delay(2500).fadeOut('slow');
-       
-            
-         }).cath(function(error){
+
+
+        }).cath(function (error) {
             $('#operationStatus').html('<div class="alert alert-success"><strong>Failure!</strong> Employee was not deleted.</div>').delay(2500).fadeOut('slow');
-         });
+        });
     });
 
-    
+
 });

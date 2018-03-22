@@ -74,6 +74,7 @@ function LoadTableData(querySnapshot) {
     querySnapshot.forEach(function (doc) {
         var document = doc.data();
         tableRow += '<tr>';
+        tableRow += '<td class="avatar"><img style="width:100px;height:100px;" src='+ document.avatarURL +' alt='+ document.fName+'></td>';
         tableRow += '<td class="fname">' + document.fName + '</td>';
         tableRow += '<td class="lname">' + document.lName + '</td>';
         tableRow += '<td class="email">' + document.email + '</td>';
